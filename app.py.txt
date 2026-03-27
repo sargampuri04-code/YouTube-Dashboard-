@@ -1,0 +1,45 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+
+st.title("YouTube Shorts Analytics Dashboard")
+
+# Load dataset
+df = pd.read_csv("data.csv")
+
+# Show data
+st.subheader("Dataset")
+st.dataframe(df)
+
+# KPIs
+st.subheader("Key Metrics")
+st.write("Total Views:", int(df["Views"].sum()))
+st.write("Average Views:", int(df["Views"].mean()))
+st.write("Average Engagement Rate:", round(df["Engagement_Rate_%"].mean(), 2))
+
+# Group by Channel
+channel_data = df.groupby("Channel_Name").mean(numeric_only=True).reset_index()
+
+st.subheader("Channel Performance")
+st.dataframe(channel_data)
+
+# Bar Chart - Views
+st.subheader("Average Views by Channel")
+fig, ax = plt.subplots()
+ax.bar(channel_data["Channel_Name"], channel_data["Views"])
+plt.xticks(rotation=45)
+st.pyplot(fig)
+
+# Bar Chart - Likes vs Comments
+st.subheader("Likes vs Comments")
+fig2, ax2 = plt.subplots()
+ax2.bar(channel_data["Channel_Name"], channel_data["Likes"])
+ax2.bar(channel_data["Channel_Name"], channel_data["Comments"])
+plt.xticks(rotation=45)
+st.pyplot(fig2)
+
+# Insights
+st.subheader("Insights")
+st.write("1. Some channels have higher reach (views)")
+st.write("2. Some channels have stronger interaction (comments)")
+st.write("3. High views do not always mean high engagement")
